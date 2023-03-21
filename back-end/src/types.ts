@@ -4,3 +4,10 @@ export interface iUserDetails {
   email: string;
   password: string;
 }
+
+export interface iCartItem {
+  productId: string;
+  cartId: string;
+  quantity: number;
+  cartItemId: string;
+}

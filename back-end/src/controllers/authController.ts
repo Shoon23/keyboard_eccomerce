@@ -32,9 +32,15 @@ export default {
         },
       });
 
+      const createCart = await prisma.cart.create({
+        data: {
+          user_id: createUser.user_id,
+        },
+      });
+
       const { password, ...details } = createUser;
 
-      res.status(201).json(details);
+      res.status(201).json({ ...details, cart_id: createCart.cart_id });
     } catch (error) {
       console.log(error);
       res.status(500).json({
