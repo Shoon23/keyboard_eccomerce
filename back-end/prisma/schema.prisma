@@ -12,50 +12,50 @@ datasource db {
 
 
 model User {
-  user_id String @id @default(cuid())
-  first_name String @db.VarChar(255)
-  last_name String @db.VarChar(255)
+  userId String @id @default(cuid())
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
   email String @unique @db.VarChar(255)
   password String @db.VarChar(255)
-  created_at DateTime @default(now())
+  createdAt DateTime @default(now())
   reviews ProductReviews[]
-  cart_id Cart?
+  cartId Cart?
 }
 
 model Cart {
-  cart_id String @id @default(cuid())
-  cart_items CartItem[]
-  user User @relation(fields: [user_id],references: [user_id])
-  user_id String @unique
+  cartId String @id @default(cuid())
+  cartItems CartItem[]
+  user User @relation(fields: [userId],references: [userId])
+  userId String @unique
 
 }
 
 model CartItem {
-  cart_item_id String @id @default(cuid())
-  cart Cart @relation(fields: [cart_id],references: [cart_id])
-  cart_id String
+  cartItemId String @id @default(cuid())
+  cart Cart @relation(fields: [cartId],references: [cartId])
+  cartId String
   quantity Int @db.Int
-  product Product? @relation(fields: [product_id],references: [product_id])
-  product_id String?
+  product Product? @relation(fields: [productId],references: [productId])
+  productId String?
 }
 
 model Product {
-  product_id String @id @default(cuid())
-  product_name String @db.VarChar(255)
-  product_price Int @db.Int()
-  product_stock Int @db.Int()
-  product_description String @db.LongText()
+  productId String @id @default(cuid())
+  productName String @db.VarChar(255)
+  productPrice Int @db.Int()
+  productStock Int @db.Int()
+  productDescription String @db.LongText()
   reviews ProductReviews[]
-  cart_item CartItem[]
+  cartItem CartItem[]
 }
 
 
 model ProductReviews {
-  review_id String @id @default(cuid())
-  review_description String @db.LongText()
-  review_star Int @db.SmallInt()
-  user User @relation(fields: [user_id],references: [user_id])
-  user_id String
-  product Product @relation(fields: [product_id],references: [product_id])
-  product_id String
+  reviewId String @id @default(cuid())
+  reviewDescription String @db.LongText()
+  reviewStar Int @db.SmallInt()
+  user User @relation(fields: [userId],references: [userId])
+  userId String
+  product Product @relation(fields: [productId],references: [productId])
+  productId String
 }

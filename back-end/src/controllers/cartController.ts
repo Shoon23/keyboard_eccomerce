@@ -8,7 +8,7 @@ export default {
     try {
       const cartItem = await prisma.cartItem.findMany({
         where: {
-          cart_id: cartId,
+          cartId: cartId,
         },
         include: {
           product: true,
@@ -27,8 +27,8 @@ export default {
     try {
       const createCartItem = await prisma.cartItem.create({
         data: {
-          cart_id: cartId,
-          product_id: productId,
+          cartId: cartId,
+          productId: productId,
           quantity,
         },
       });
@@ -45,7 +45,7 @@ export default {
     try {
       await prisma.cartItem.delete({
         where: {
-          cart_item_id: cartItemId,
+          cartItemId: cartItemId,
         },
       });
 
@@ -64,7 +64,7 @@ export default {
     try {
       const updateCartItem = await prisma.cartItem.update({
         where: {
-          cart_item_id: cartItemId,
+          cartItemId: cartItemId,
         },
         data: {
           quantity,

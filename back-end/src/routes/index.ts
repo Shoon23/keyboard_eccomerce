@@ -1,4 +1,5 @@
 import authRoutes from "./authRoutes";
 import cartRoutes from "./cartRoutes";
+import productRoutes from "./productRoutes";
 
-export { authRoutes, cartRoutes };
+export { authRoutes, cartRoutes, productRoutes };
