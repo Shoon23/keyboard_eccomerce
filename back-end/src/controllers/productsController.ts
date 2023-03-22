@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { iProduct, iReview } from "../types";
+import cloudinaryConn from "../cloudinary";
+import fs from "fs/promises";
 
 export default {
   async getAllProducts(req: Request, res: Response) {
@@ -25,7 +27,9 @@ export default {
           productId: productId,
         },
         include: {
-          reviews: true,
+          reviews: {
+            take: 5,
+          },
         },
       });
       res.status(200).json(getProduct);
@@ -37,6 +41,7 @@ export default {
     }
   },
   async addProduct(req: Request, res: Response) {
+    const filePath = req.file?.path as string;
     const {
       productName,
       productPrice,
@@ -44,6 +49,8 @@ export default {
       productDescription,
     }: iProduct = req.body;
 
+    console.log(productName);
+    console.log(filePath);
     try {
       const createProduct = await prisma.product.create({
         data: {
@@ -54,7 +61,19 @@ export default {
         },
       });
 
-      res.status(201).json(createProduct);
+      const response = await cloudinaryConn().uploader.upload(filePath, {
+        public_id: "product_img",
+      });
+
+      const createProductImg = await prisma.productImg.create({
+        data: {
+          productId: createProduct.productId,
+          imgUrl: response.data.secure_url,
+        },
+      });
+      await fs.unlink(filePath);
+
+      res.status(201).json({ ...createProduct, img: createProductImg.imgUrl });
     } catch (error) {
       console.log(error);
       res.status(500).json({
