@@ -2,12 +2,16 @@ import { Request, Response } from "express";
 import prisma from "../prisma";
 import { iUserDetails } from "../types";
 import bcrypt from "bcrypt";
-
-const saltRounds = 10;
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/generateJwtToken";
 
 export default {
   async registerController(req: Request, res: Response) {
     const userDetails: iUserDetails = req.body;
+    const saltRounds = 10;
+
     try {
       const isUserExist = await prisma.user.findUnique({
         where: {
@@ -38,9 +42,16 @@ export default {
         },
       });
 
+      const accessToken = generateAccessToken(createUser.userId);
+      const refreshToken = generateRefreshToken(createUser.userId);
+
       const { password, ...details } = createUser;
 
-      res.status(201).json({ ...details, cart_id: createCart.cartId });
+      res.cookie("refreshToken", refreshToken, { httpOnly: true });
+
+      res
+        .status(201)
+        .json({ ...details, cart_id: createCart.cartId, accessToken });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -71,10 +82,14 @@ export default {
           message: "Wrong Password",
         });
       }
+      const accessToken = generateAccessToken(isUserExist.userId);
+      const refreshToken = generateRefreshToken(isUserExist.userId);
+
+      res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
       const { password, ...details } = isUserExist;
 
-      res.status(200).json(details);
+      res.status(200).json({ ...details, accessToken });
     } catch (error) {
       console.log(error);
       res.status(500).json({
