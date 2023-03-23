@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../prisma";
 import { iUserDetails } from "../types";
 import bcrypt from "bcrypt";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -51,7 +52,7 @@ export default {
 
       res
         .status(201)
-        .json({ ...details, cart_id: createCart.cartId, accessToken });
+        .json({ ...details, cartId: createCart.cartId, accessToken });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -65,6 +66,9 @@ export default {
       const isUserExist = await prisma.user.findUnique({
         where: {
           email: useDetails.email,
+        },
+        include: {
+          cartId: true,
         },
       });
 
@@ -82,18 +86,59 @@ export default {
           message: "Wrong Password",
         });
       }
+      const { password, cartId, ...details } = isUserExist;
       const accessToken = generateAccessToken(isUserExist.userId);
       const refreshToken = generateRefreshToken(isUserExist.userId);
 
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
-      const { password, ...details } = isUserExist;
-
-      res.status(200).json({ ...details, accessToken });
+      res.status(200).json({ ...details, cartId: cartId?.cartId, accessToken });
     } catch (error) {
       console.log(error);
       res.status(500).json({
         message: "Something went wrong",
+      });
+    }
+  },
+  async refreshAccessToken(req: Request, res: Response) {
+    const refreshToken = req.cookies.refreshToken;
+    const PRIVATE_JWT_KEY = process.env.PRIVATE_JWT_KEY as string;
+
+    try {
+      const verifyToken: any = jwt.verify(refreshToken, PRIVATE_JWT_KEY);
+      const userId = verifyToken.userId;
+
+      const getUser = await prisma.user.findUnique({
+        where: {
+          userId,
+        },
+        include: {
+          cartId: true,
+        },
+      });
+
+      if (!getUser) {
+        return res.status(303).json({
+          message: "User Not Yet Registered",
+        });
+      }
+
+      const { password, cartId, ...details } = getUser;
+      const newAccessToken = generateAccessToken(userId);
+      const newRefreshToken = generateRefreshToken(userId);
+
+      res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+
+      res
+        .status(200)
+        .json({
+          ...details,
+          cartId: cartId?.cartId,
+          accessToken: newAccessToken,
+        });
+    } catch (error: any) {
+      res.status(403).json({
+        message: "User not authorosize",
       });
     }
   },

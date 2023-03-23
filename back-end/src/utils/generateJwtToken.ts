@@ -8,5 +8,5 @@ export const generateAccessToken = (userId: string) => {
 };
 
 export const generateRefreshToken = (userId: string) => {
-  return jwt.sign({ userId }, PRIVATE_JWT_KEY, { expiresIn: "1hr" });
+  return jwt.sign({ userId }, PRIVATE_JWT_KEY, { expiresIn: "1d" });
 };
