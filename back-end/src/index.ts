@@ -16,14 +16,14 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
 app.use("/auth", authRoutes);
-
+app.use("/products", productRoutes);
 app.use(verifyAccessToken);
 app.use("/cart", cartRoutes);
-app.use("/products", productRoutes);
 
 app.listen(PORT, () => {
   console.log(`App running on http://localhost:8080`);

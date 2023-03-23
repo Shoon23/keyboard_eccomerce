@@ -11,10 +11,21 @@ export default {
           cartId: cartId,
         },
         include: {
-          product: true,
+          product: {
+            include: {
+              productImg: true,
+            },
+          },
         },
       });
-      res.status(200).json(cartItem);
+      // console.log(cartItem.length);
+      // .product?.productPrice * cartItem?.quantity
+      let totalPrice = 0;
+      cartItem.map((item: any) => {
+        totalPrice += item.product?.productPrice * item.quantity;
+      });
+
+      res.status(200).json({ cartItem, totalPrice });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -42,10 +53,11 @@ export default {
   },
   async removeItemToCart(req: Request, res: Response) {
     const cartItemId = req.params.cartItemId;
+
     try {
       await prisma.cartItem.delete({
         where: {
-          cartItemId: cartItemId,
+          cartItemId,
         },
       });
 
@@ -70,7 +82,6 @@ export default {
           quantity,
         },
       });
-
       res.status(201).json(updateCartItem);
     } catch (error) {
       console.log(error);

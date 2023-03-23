@@ -9,6 +9,9 @@ export default {
     try {
       const products = await prisma.product.findMany({
         take: 10,
+        include: {
+          productImg: true,
+        },
       });
 
       res.status(200).json(products);
@@ -29,9 +32,20 @@ export default {
         include: {
           reviews: {
             take: 5,
+            include: {
+              user: true,
+            },
           },
+          productImg: true,
         },
       });
+
+      if (!getProduct) {
+        return res.status(404).json({
+          message: "Cannot Find Product",
+        });
+      }
+
       res.status(200).json(getProduct);
     } catch (error) {
       console.log(error);
