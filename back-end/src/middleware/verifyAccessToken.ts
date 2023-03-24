@@ -10,12 +10,14 @@ export default function verifyAccessToken(
   const PUBLIC_JWT_KEY = process.env.PUBLIC_JWT_KEY as string;
   const accessToken = bearerToken?.split(" ")[1] as string;
 
+  console.log(bearerToken);
   try {
     jwt.verify(accessToken, PUBLIC_JWT_KEY);
     next();
   } catch (error) {
     res.status(403).json({
       message: "Something Went Wrong",
+      status: "expired refresh token",
     });
   }
 }

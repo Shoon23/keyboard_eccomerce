@@ -115,6 +115,11 @@ export default {
       });
     }
   },
+  async logoutController(req: Request, res: Response) {
+    res.clearCookie("refreshToken").status(200).json({
+      message: "Successfully Log Out",
+    });
+  },
   async refreshAccessToken(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
     const PRIVATE_JWT_KEY = process.env.PRIVATE_JWT_KEY as string;
