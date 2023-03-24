@@ -72,7 +72,6 @@ export default {
           favoriteItemId,
         },
       });
-
       res.status(200).json({
         message: "Item Removed",
       });
