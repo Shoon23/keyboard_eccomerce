@@ -18,8 +18,6 @@ export default {
           },
         },
       });
-      // console.log(cartItem.length);
-      // .product?.productPrice * cartItem?.quantity
       let totalPrice = 0;
       cartItem.map((item: any) => {
         totalPrice += item.product?.productPrice * item.quantity;

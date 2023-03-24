@@ -41,6 +41,7 @@ export default {
           },
         },
       });
+
       res.status(200).json(getfavorites);
     } catch (error) {
       console.log(error);
