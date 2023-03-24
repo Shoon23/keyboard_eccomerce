@@ -43,6 +43,12 @@ export default {
         },
       });
 
+      const createFavorites = await prisma.favorites.create({
+        data: {
+          userId: createCart.userId,
+        },
+      });
+
       const accessToken = generateAccessToken(createUser.userId);
       const refreshToken = generateRefreshToken(createUser.userId);
 
@@ -50,9 +56,12 @@ export default {
 
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
-      res
-        .status(201)
-        .json({ ...details, cartId: createCart.cartId, accessToken });
+      res.status(201).json({
+        ...details,
+        cartId: createCart.cartId,
+        accessToken,
+        favoritesId: createFavorites.favotiresId,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -69,6 +78,7 @@ export default {
         },
         include: {
           cartId: true,
+          favoritesId: true,
         },
       });
 
@@ -86,13 +96,18 @@ export default {
           message: "Wrong Password",
         });
       }
-      const { password, cartId, ...details } = isUserExist;
+      const { password, cartId, favoritesId, ...details } = isUserExist;
       const accessToken = generateAccessToken(isUserExist.userId);
       const refreshToken = generateRefreshToken(isUserExist.userId);
 
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
-      res.status(200).json({ ...details, cartId: cartId?.cartId, accessToken });
+      res.status(200).json({
+        ...details,
+        cartId: cartId?.cartId,
+        accessToken,
+        favoritesId: favoritesId?.favotiresId,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -114,6 +129,7 @@ export default {
         },
         include: {
           cartId: true,
+          favoritesId: true,
         },
       });
 
@@ -123,19 +139,18 @@ export default {
         });
       }
 
-      const { password, cartId, ...details } = getUser;
+      const { password, cartId, favoritesId, ...details } = getUser;
       const newAccessToken = generateAccessToken(userId);
       const newRefreshToken = generateRefreshToken(userId);
 
       res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
-      res
-        .status(200)
-        .json({
-          ...details,
-          cartId: cartId?.cartId,
-          accessToken: newAccessToken,
-        });
+      res.status(200).json({
+        ...details,
+        cartId: cartId?.cartId,
+        accessToken: newAccessToken,
+        favoritesId: favoritesId?.favotiresId,
+      });
     } catch (error: any) {
       res.status(403).json({
         message: "User not authorosize",

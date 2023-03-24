@@ -20,6 +20,5 @@ router.get("/:productId", productsController.getSingleProduct);
 router.post("/add", upload.single("image"), productsController.addProduct);
 router.put("/update", productsController.updateProduct);
 router.delete("/delete/:productId", productsController.deleteProduct);
-router.post("/review/new", productsController.addProductReviews);
 
 export default router;

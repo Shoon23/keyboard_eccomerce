@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { authRoutes, cartRoutes, productRoutes } from "./routes";
+import { authRoutes, cartRoutes, productRoutes, userRoutes } from "./routes";
 import verifyAccessToken from "./middleware/verifyAccessToken";
 
 const app = express();
@@ -24,6 +24,7 @@ app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
 app.use(verifyAccessToken);
 app.use("/cart", cartRoutes);
+app.use("/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log(`App running on http://localhost:8080`);

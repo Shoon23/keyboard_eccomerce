@@ -132,27 +132,4 @@ export default {
       });
     }
   },
-  async addProductReviews(req: Request, res: Response) {
-    const { productId, userId, reviewDescription, reviewStar }: iReview =
-      req.body;
-
-    try {
-      const addReview = await prisma.productReviews.create({
-        data: {
-          productId: productId,
-          userId: userId,
-          reviewDescription: reviewDescription,
-          reviewStar: reviewStar,
-        },
-      });
-
-      res.status(201).json(addReview);
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
-        message: "Something Went Wrong",
-      });
-    }
-  },
 };
