@@ -24,6 +24,7 @@ function ProductDetails({ pageRef, productDetails, totalReviews }: Props) {
   const clearUserDetails = useAuthStore((state) => state.clearUserDetails);
 
   const [quantity, setQuantity] = useState<number>(1);
+  const [currImg, setCurrImg] = useState<number>(0);
   const axios = apiPrivate(accessToken);
   const api = useInterceptors(axios, accessToken);
   const navigate = useNavigate();
@@ -116,15 +117,24 @@ function ProductDetails({ pageRef, productDetails, totalReviews }: Props) {
         theme="light"
       />
       <div className="flex flex-col">
-        <img src={productDetails.productImg[0]?.imgUrl} alt="" />
+        <img src={productDetails.productImg[currImg]?.imgUrl} alt="" />
         <div className="flex pl-4">
-          <img
-            src={productDetails.productImg[1]?.imgUrl}
-            className="h-20 w-20 border border-gray-400"
-            alt=""
-          />
-          {/* <img src={product.productImg3} className="h-20 w-20" alt="" />
-          <img src={product.productImg4} className="h-20 w-20" alt="" /> */}
+          {productDetails?.productImg.map(
+            (
+              img: { imgUrl: string; productId: string; productImgId: string },
+              idx: number
+            ) => {
+              return (
+                <img
+                  onClick={() => setCurrImg(idx)}
+                  key={img.productImgId}
+                  src={img.imgUrl}
+                  className="h-20 w-20 cursor-pointer border border-gray-400"
+                  alt=""
+                />
+              );
+            }
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-2 p-4">

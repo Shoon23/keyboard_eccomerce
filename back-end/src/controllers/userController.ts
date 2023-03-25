@@ -28,6 +28,7 @@ export default {
   },
   async getAllFavorites(req: Request, res: Response) {
     const favoritesId = req.params.favoritesId;
+
     try {
       const getfavorites = await prisma.favoriteItem.findMany({
         where: {

@@ -11,7 +11,10 @@ export default function verifyAccessToken(
   const accessToken = bearerToken?.split(" ")[1] as string;
 
   try {
-    jwt.verify(accessToken, PUBLIC_JWT_KEY);
+    const decoded: any = jwt.verify(accessToken, PUBLIC_JWT_KEY);
+
+    // res.locals.userId = decoded.userId;
+    // res.locals.favoritesId = decoded.favoritesId;
     next();
   } catch (error) {
     res.status(403).json({

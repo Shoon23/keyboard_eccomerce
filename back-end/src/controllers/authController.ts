@@ -11,7 +11,6 @@ import {
 export default {
   async registerController(req: Request, res: Response) {
     const userDetails: iUserDetails = req.body;
-    const saltRounds = 10;
 
     try {
       const isUserExist = await prisma.user.findUnique({
@@ -25,6 +24,7 @@ export default {
           message: "User Already Exist",
         });
       }
+      const saltRounds = 10;
 
       const hashPasswrod = await bcrypt.hash(userDetails.password, saltRounds);
 
@@ -49,8 +49,14 @@ export default {
         },
       });
 
-      const accessToken = generateAccessToken(createUser.userId);
-      const refreshToken = generateRefreshToken(createUser.userId);
+      const accessToken = generateAccessToken(
+        createUser.userId,
+        createFavorites.favotiresId
+      );
+      const refreshToken = generateRefreshToken(
+        createUser.userId,
+        createFavorites.favotiresId
+      );
 
       const { password, ...details } = createUser;
 
@@ -71,6 +77,8 @@ export default {
   },
   async loginController(req: Request, res: Response) {
     const useDetails: iUserDetails = req.body;
+
+    console.log(res.locals.user);
     try {
       const isUserExist = await prisma.user.findUnique({
         where: {
@@ -78,7 +86,9 @@ export default {
         },
         include: {
           cartId: true,
-          favoritesId: true,
+          favoritesId: {
+            include: { favoriteItems: true },
+          },
         },
       });
 
@@ -96,10 +106,16 @@ export default {
           message: "Wrong Password",
         });
       }
-      const { password, cartId, favoritesId, ...details } = isUserExist;
-      const accessToken = generateAccessToken(isUserExist.userId);
-      const refreshToken = generateRefreshToken(isUserExist.userId);
 
+      const { password, cartId, favoritesId, ...details } = isUserExist;
+      const accessToken = generateAccessToken(
+        isUserExist.userId,
+        favoritesId?.favotiresId
+      );
+      const refreshToken = generateRefreshToken(
+        isUserExist.userId,
+        favoritesId?.favotiresId
+      );
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
       res.status(200).json({
@@ -145,15 +161,21 @@ export default {
       }
 
       const { password, cartId, favoritesId, ...details } = getUser;
-      const newAccessToken = generateAccessToken(userId);
-      const newRefreshToken = generateRefreshToken(userId);
+      const newAccessToken = generateAccessToken(
+        userId,
+        favoritesId?.favotiresId
+      );
+      const newRefreshToken = generateRefreshToken(
+        userId,
+        favoritesId?.favotiresId
+      );
 
       res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 
       res.status(200).json({
         ...details,
         cartId: cartId?.cartId,
-        accessToken: newAccessToken,
+        newAccessToken,
         favoritesId: favoritesId?.favotiresId,
       });
     } catch (error: any) {

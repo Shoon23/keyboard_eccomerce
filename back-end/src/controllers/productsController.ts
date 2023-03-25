@@ -13,7 +13,6 @@ export default {
           productImg: true,
         },
       });
-
       res.status(200).json(products);
     } catch (error) {
       console.log(error);
@@ -24,6 +23,7 @@ export default {
   },
   async getSingleProduct(req: Request, res: Response) {
     const productId = req.params.productId;
+
     try {
       const getProduct = await prisma.product.findFirst({
         where: {
