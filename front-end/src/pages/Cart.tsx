@@ -7,6 +7,7 @@ import { usePageRef } from "../hooks/usePageRef";
 import { useInterceptors } from "../hooks/useInterceptors";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
+import Checkout from "./Checkout";
 
 function Cart() {
   const cartId = useAuthStore((state) => state.cartId);
@@ -76,9 +77,7 @@ function Cart() {
               <h2 className="text-xl font-black">${price}</h2>
             </div>
           </div>
-          <button className="mb-5 h-10 w-36 self-end rounded-md bg-sky-600 text-white hover:bg-sky-500">
-            Check Out
-          </button>
+          <Checkout cart={cart} price={price} />
         </div>
       </section>
     </main>

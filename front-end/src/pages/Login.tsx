@@ -74,7 +74,7 @@ function Login() {
             <p className="text-sm text-red-500">{errors.email?.message}</p>
           </div>
           <button className="mt-8 h-12 w-32 bg-sky-600 text-white hover:bg-sky-700">
-            Register
+            Login
           </button>
           <div className="mt-2 text-sm">
             New customer?

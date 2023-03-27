@@ -21,10 +21,43 @@ model User {
   reviews ProductReviews[]
   cartId Cart?
   favoritesId Favorites?
+  orders Orders?
+}
 
+model Orders {
+  ordersId String @id @default(cuid())
+  amount String @db.VarChar(255)
+  user User @relation(fields: [userId],references: [userId])
+  userId String @unique
+  orders OrderItem[]
+  shippingAddress ShippingAddress?
+}
+
+model ShippingAddress {
+  shippingAddressId String @id @default(cuid())
+  city String @db.VarChar(255)
+  country String @db.VarChar(255)
+  line1 String @db.VarChar(255)
+  line2 String @db.VarChar(255)
+  postal_code String @db.VarChar(255)
+  state String @db.VarChar(255)
+  phone String @db.VarChar(100)
+  email String @unique @db.VarChar(255)
+  orders Orders @relation(fields: [ordersId],references: [ordersId])
+  ordersId String @unique
 }
 
 
+model OrderItem{
+  orderItemId String @id @default(cuid())
+  price String @db.VarChar(255)
+  quantity Int @db.Int
+  status String @db.VarChar(255) @default("pending")
+  currency String @db.VarChar(100) @default("php")
+  productId String
+  orders Orders @relation(fields: [ordersId],references: [ordersId])
+  ordersId String  
+}
 
 model Favorites {
   favotiresId String @id @default(cuid())
@@ -63,6 +96,7 @@ model Product {
   productId String @id @default(cuid())
   productName String @db.VarChar(255)
   productPrice Int @db.Int()
+  productPriceId String @db.VarChar(255)
   productStock Int @db.Int()
   productDescription String @db.LongText()
   reviews ProductReviews[]

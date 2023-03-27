@@ -9,6 +9,8 @@ import Cart from "./pages/Cart";
 import PrivateRoutes from "./middleware/PrivateRoutes";
 import PersistAuth from "./middleware/PersistAuth";
 import Profile from "./pages/Profile";
+import Checkout from "./pages/Checkout";
+import SuccesCheckout from "./pages/SuccesCheckout";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,10 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: <Register />,
+          },
+          {
+            path: "success",
+            element: <SuccesCheckout />,
           },
           {
             element: <PrivateRoutes />,

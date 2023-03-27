@@ -175,7 +175,7 @@ export default {
       res.status(200).json({
         ...details,
         cartId: cartId?.cartId,
-        newAccessToken,
+        accessToken: newAccessToken,
         favoritesId: favoritesId?.favotiresId,
       });
     } catch (error: any) {

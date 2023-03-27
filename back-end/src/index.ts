@@ -3,15 +3,22 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import prisma from "./prisma";
 
-import { authRoutes, cartRoutes, productRoutes, userRoutes } from "./routes";
+import {
+  authRoutes,
+  cartRoutes,
+  productRoutes,
+  userRoutes,
+  stripeRoutes,
+  webhookRoutes,
+} from "./routes";
 import verifyAccessToken from "./middleware/verifyAccessToken";
 
 const app = express();
 
 const PORT = 8080;
 
-app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
@@ -20,6 +27,9 @@ app.use(
   })
 );
 
+app.use("/stripe", webhookRoutes);
+app.use(express.json());
+app.use("/stripe", stripeRoutes);
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
 app.use(verifyAccessToken);

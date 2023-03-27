@@ -8,6 +8,9 @@ function PrivateRoutes() {
   const { pageRef } = usePageRef();
   const userId = useAuthStore((state) => state.userId);
 
+  console.log(userId);
+
+  console.log("from private routes");
   return userId ? (
     <Outlet context={{ pageRef }} />
   ) : (
