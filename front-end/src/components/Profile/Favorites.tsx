@@ -38,7 +38,9 @@ function Favorites({}: Props) {
       {isLoading ? (
         <div className="">Loadinngg...</div>
       ) : favorites.length === 0 ? (
-        <div className="">No Favorites</div>
+        <div className="flex h-full items-center justify-center">
+          <h1 className="text-3xl">No Favorites</h1>
+        </div>
       ) : (
         favorites.map((favorite: iFavorite) => (
           <FavoriteCard

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { iProduct, iReview } from "../types";
-import cloudinaryConn from "../cloudinary";
+import cloudinaryConn from "../services/cloudinary";
 import fs from "fs/promises";
 
 export default {
@@ -72,6 +72,7 @@ export default {
           productPrice: productPrice,
           productStock: productStock,
           productDescription: productDescription,
+          productPriceId: "",
         },
       });
 

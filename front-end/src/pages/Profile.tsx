@@ -9,6 +9,7 @@ import { apiPrivate } from "../utils/axiosBase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useInterceptors } from "../hooks/useInterceptors";
+import MyOrders from "../components/Profile/MyOrders";
 
 function Profile() {
   const { firstName, lastName, email, accessToken, clearUserDetails } =
@@ -16,7 +17,7 @@ function Profile() {
   const axios = apiPrivate(accessToken as string);
   const api = useInterceptors(axios, accessToken as string);
   const { pageRef } = usePageRef();
-  const [isShow, setIsShow] = useState<number>(1);
+  const [isShow, setIsShow] = useState<string>("personal");
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
@@ -48,33 +49,48 @@ function Profile() {
           <div className="mt-3 flex flex-col">
             <ul>
               <li
-                onClick={() => setIsShow(1)}
+                onClick={() => setIsShow("personal")}
                 className={`cursor-pointer text-lg ${
-                  isShow === 1 && "text-sky-500"
+                  isShow === "personal" && "text-sky-500"
                 }`}
               >
                 Personal Information
               </li>
               <li
-                onClick={() => setIsShow(2)}
+                onClick={() => setIsShow("favorites")}
                 className={`cursor-pointer text-lg ${
-                  isShow === 2 && "text-sky-500"
+                  isShow === "favorites" && "text-sky-500"
                 }`}
               >
                 Favorites
               </li>
+              <li
+                onClick={() => setIsShow("myorders")}
+                className={`cursor-pointer text-lg ${
+                  isShow === "myorders" && "text-sky-500"
+                }`}
+              >
+                My Orders
+              </li>
             </ul>
           </div>
         </aside>
-        {isShow === 1 ? (
-          <PersonalInfo
-            firstName={firstName}
-            lastName={lastName}
-            email={email}
-          />
-        ) : (
-          <Favorites />
-        )}
+        {(() => {
+          switch (isShow) {
+            case "personal":
+              return (
+                <PersonalInfo
+                  firstName={firstName}
+                  lastName={lastName}
+                  email={email}
+                />
+              );
+            case "favorites":
+              return <Favorites />;
+            case "myorders":
+              return <MyOrders />;
+          }
+        })()}
       </section>
     </main>
   );

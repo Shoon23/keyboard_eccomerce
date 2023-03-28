@@ -55,7 +55,7 @@ function ReviewForm({ setIsAddReview, productId, setProductReviews }: Props) {
         { ...res.data, user: { userId, firstName, lastName } },
       ]);
 
-      toast.success("Cart Item Remove", {
+      toast.success("Review Added", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,

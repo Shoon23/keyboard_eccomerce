@@ -18,17 +18,18 @@ model User {
   email String @unique @db.VarChar(255)
   password String @db.VarChar(255)
   createdAt DateTime @default(now())
+  isAdmin Boolean @default(false)
   reviews ProductReviews[]
   cartId Cart?
   favoritesId Favorites?
-  orders Orders?
+  orders Orders[]
 }
 
 model Orders {
   ordersId String @id @default(cuid())
   amount String @db.VarChar(255)
   user User @relation(fields: [userId],references: [userId])
-  userId String @unique
+  userId String
   orders OrderItem[]
   shippingAddress ShippingAddress?
 }
@@ -42,8 +43,8 @@ model ShippingAddress {
   postal_code String @db.VarChar(255)
   state String @db.VarChar(255)
   phone String @db.VarChar(100)
-  email String @unique @db.VarChar(255)
-  orders Orders @relation(fields: [ordersId],references: [ordersId])
+  email String  @db.VarChar(255)
+  order Orders @relation(fields: [ordersId],references: [ordersId])
   ordersId String @unique
 }
 

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useAuthStore from "../store/authStore";
 import { api } from "../utils/axiosBase";
 
@@ -10,8 +11,9 @@ function Checkout({ cart, price }: Props) {
   const userId = useAuthStore((state) => state.userId);
   const email = useAuthStore((state) => state.email);
   const cartId = useAuthStore((state) => state.cartId);
-  console.log(cart);
+  const [isCheckOut, setIsCheckOut] = useState(false);
   const handleCheckOut = async () => {
+    setIsCheckOut(true);
     const details = cart.map((item: any) => {
       return {
         price: item?.product?.productPriceId,
@@ -36,13 +38,18 @@ function Checkout({ cart, price }: Props) {
     } catch (error) {
       console.log(error);
     }
+    setIsCheckOut(false);
   };
 
   return (
     <button
-      disabled={cart.length === 0 && true}
+      disabled={cart.length === 0 || (isCheckOut && true)}
       onClick={handleCheckOut}
-      className="mb-5 h-10 w-36 self-end rounded-md bg-sky-600 text-white hover:bg-sky-500"
+      className={
+        isCheckOut || cart.length === 0
+          ? "gray-sky-600 gray:bg-sky-500 mb-5 h-10 w-36 self-end rounded-md border border-black  text-black"
+          : "mb-5 h-10 w-36 self-end rounded-md bg-sky-600 text-white hover:bg-sky-500"
+      }
     >
       Check Out
     </button>

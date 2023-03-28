@@ -1,22 +1,22 @@
 import { Request, Response } from "express";
-import Stripe from "stripe";
+import { stripe } from "../services/stripe";
 import prisma from "../prisma";
-const stripe = new Stripe(process.env.STRIPE_API_KEY as string, {
-  apiVersion: "2022-11-15",
-});
+
 export default {
   async stripeWebhooks(req: Request, res: Response) {
-    const sig = req.headers["stripe-signature"] as string;
-    const endPoint =
-      "whsec_4dad571242a1182fe30d9a8685072cc372d9c1298dbc1f7aeb5cd8338b11c745";
+    const endPoint = process.env.END_POINT as string;
 
-    let event;
+    let event = req.body;
 
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, endPoint);
-    } catch (err) {
-      res.status(400).send(`Webhook Error: ${err}`);
-      return;
+    if (endPoint) {
+      const sig = req.headers["stripe-signature"] as string;
+
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endPoint);
+      } catch (err) {
+        res.status(400).send(`Webhook Error: ${err}`);
+        return;
+      }
     }
 
     switch (event.type) {
