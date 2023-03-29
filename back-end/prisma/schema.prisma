@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,115 +7,133 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  userId String @id @default(cuid())
-  firstName String @db.VarChar(255)
-  lastName String @db.VarChar(255)
-  email String @unique @db.VarChar(255)
-  password String @db.VarChar(255)
-  createdAt DateTime @default(now())
-  isAdmin Boolean @default(false)
-  reviews ProductReviews[]
-  cartId Cart?
+  userId      String           @id @default(cuid())
+  firstName   String           @db.VarChar(255)
+  lastName    String           @db.VarChar(255)
+  email       String           @unique @db.VarChar(255)
+  password    String           @db.VarChar(255)
+  createdAt   DateTime         @default(now())
+  isAdmin     Boolean          @default(false)
+  cartId      Cart?
   favoritesId Favorites?
-  orders Orders[]
+  checkouts CheckOut?
+  reviews     ProductReviews[]
+}
+
+model CheckOut {
+  checkOutId String @id @default(cuid())
+  user User @relation(fields: [userId],references: [userId])
+  userId String @unique
+  orders Orders[] 
 }
 
 model Orders {
-  ordersId String @id @default(cuid())
-  amount String @db.VarChar(255)
-  user User @relation(fields: [userId],references: [userId])
-  userId String
-  orders OrderItem[]
+  ordersId        String           @id @default(cuid())
+  amount          String           @db.VarChar(255)
+  checkOutId String
+  checkout CheckOut @relation(fields: [checkOutId],references: [checkOutId])
+  orders          OrderItem[]
   shippingAddress ShippingAddress?
+  status String?
+
 }
 
 model ShippingAddress {
   shippingAddressId String @id @default(cuid())
-  city String @db.VarChar(255)
-  country String @db.VarChar(255)
-  line1 String @db.VarChar(255)
-  line2 String @db.VarChar(255)
-  postal_code String @db.VarChar(255)
-  state String @db.VarChar(255)
-  phone String @db.VarChar(100)
-  email String  @db.VarChar(255)
-  order Orders @relation(fields: [ordersId],references: [ordersId])
-  ordersId String @unique
+  city              String @db.VarChar(255)
+  country           String @db.VarChar(255)
+  line1             String @db.VarChar(255)
+  line2             String @db.VarChar(255)
+  postal_code       String @db.VarChar(255)
+  state             String @db.VarChar(255)
+  phone             String @db.VarChar(100)
+  email             String @db.VarChar(255)
+  ordersId          String @unique
+  order             Orders @relation(fields: [ordersId], references: [ordersId])
 }
 
-
-model OrderItem{
+model OrderItem {
   orderItemId String @id @default(cuid())
-  price String @db.VarChar(255)
-  quantity Int @db.Int
-  status String @db.VarChar(255) @default("pending")
-  currency String @db.VarChar(100) @default("php")
-  productId String
-  orders Orders @relation(fields: [ordersId],references: [ordersId])
-  ordersId String  
+  price       String @db.VarChar(255)
+  quantity    Int
+  status      String @default("pending") @db.VarChar(255)
+  currency    String @default("php") @db.VarChar(100)
+  productId   String
+  ordersId    String
+  orders      Orders @relation(fields: [ordersId], references: [ordersId])
+
+  @@index([ordersId], map: "OrderItem_ordersId_fkey")
 }
 
 model Favorites {
-  favotiresId String @id @default(cuid())
+  favotiresId   String         @id @default(cuid())
+  userId        String         @unique
   favoriteItems FavoriteItem[]
-  user User @relation(fields: [userId],references: [userId])
-  userId String @unique
+  user          User           @relation(fields: [userId], references: [userId])
 }
 
 model FavoriteItem {
-  favoriteItemId String @id @default(cuid())
-  favorites Favorites @relation(fields: [favoritesId],references: [favotiresId])
-  favoritesId String
-  product Product @relation(fields: [productId],references: [productId])
-  productId String
+  favoriteItemId String    @id @default(cuid())
+  favoritesId    String
+  productId      String
+  favorites      Favorites @relation(fields: [favoritesId], references: [favotiresId])
+  product        Product   @relation(fields: [productId], references: [productId])
+
+  @@index([favoritesId], map: "FavoriteItem_favoritesId_fkey")
+  @@index([productId], map: "FavoriteItem_productId_fkey")
 }
 
 model Cart {
-  cartId String @id @default(cuid())
+  cartId    String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [userId])
   cartItems CartItem[]
-  user User @relation(fields: [userId],references: [userId])
-  userId String @unique
-
 }
 
 model CartItem {
-  cartItemId String @id @default(cuid())
-  cart Cart @relation(fields: [cartId],references: [cartId])
-  cartId String
-  quantity Int @db.Int
-  product Product? @relation(fields: [productId],references: [productId])
-  productId String?
+  cartItemId String   @id @default(cuid())
+  cartId     String
+  quantity   Int
+  productId  String?
+  cart       Cart     @relation(fields: [cartId], references: [cartId])
+  product    Product? @relation(fields: [productId], references: [productId])
 
+  @@index([cartId], map: "CartItem_cartId_fkey")
+  @@index([productId], map: "CartItem_productId_fkey")
 }
 
 model Product {
-  productId String @id @default(cuid())
-  productName String @db.VarChar(255)
-  productPrice Int @db.Int()
-  productPriceId String @db.VarChar(255)
-  productStock Int @db.Int()
-  productDescription String @db.LongText()
-  reviews ProductReviews[]
-  cartItem CartItem[]
-  productImg ProductImg[]
-  favoriteItems FavoriteItem[]
+  productId          String           @id @default(cuid())
+  productName        String           @db.VarChar(255)
+  productPrice       Int
+  productStock       Int
+  productDescription String           @db.LongText
+  productPriceId     String           @db.VarChar(255)
+  cartItem           CartItem[]
+  favoriteItems      FavoriteItem[]
+  productImg         ProductImg[]
+  reviews            ProductReviews[]
 }
 
 model ProductImg {
-  productImgId String @id @default(cuid())
-  product Product @relation(fields: [productId],references: [productId])
-  productId String
-  imgUrl String @db.LongText
+  productImgId String  @id @default(cuid())
+  productId    String
+  imgUrl       String  @db.LongText
+  product      Product @relation(fields: [productId], references: [productId])
+
+  @@index([productId], map: "ProductImg_productId_fkey")
 }
 
 model ProductReviews {
-  reviewId String @id @default(cuid())
-  reviewDescription String @db.LongText()
-  reviewStar Int @db.SmallInt()
-  user User @relation(fields: [userId],references: [userId])
-  userId String
-  product Product @relation(fields: [productId],references: [productId])
-  productId String
+  reviewId          String  @id @default(cuid())
+  reviewDescription String  @db.LongText
+  reviewStar        Int     @db.SmallInt
+  userId            String
+  productId         String
+  product           Product @relation(fields: [productId], references: [productId])
+  user              User    @relation(fields: [userId], references: [userId])
+
+  @@index([productId], map: "ProductReviews_productId_fkey")
+  @@index([userId], map: "ProductReviews_userId_fkey")
 }

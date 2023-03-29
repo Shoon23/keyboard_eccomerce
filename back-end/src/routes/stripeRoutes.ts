@@ -7,7 +7,7 @@ const router = Router();
 router.post("/create-checkout-session", async (req, res) => {
   const orders = req.body;
 
-  console.log(orders.userId);
+  console.log(orders.checkOutId);
 
   const line_items: any[] = [];
 
@@ -17,10 +17,9 @@ router.post("/create-checkout-session", async (req, res) => {
     const createOrder = await prisma.orders.create({
       data: {
         amount: amount.toString(),
-        userId: orders?.userId,
+        checkOutId: orders.checkOutId,
       },
     });
-
     const filteredOrder = orders.details.map((item: any) => {
       line_items.push({ quantity: item?.quantity, price: item.price });
       return {
@@ -33,7 +32,6 @@ router.post("/create-checkout-session", async (req, res) => {
     const createOrderItem = await prisma.orderItem.createMany({
       data: filteredOrder,
     });
-
     const session = await stripe?.checkout?.sessions.create({
       customer_email: orders.email,
       metadata: {

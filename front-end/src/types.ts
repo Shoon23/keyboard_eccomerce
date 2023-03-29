@@ -20,6 +20,8 @@ export interface iUser {
   cartId: string;
   accessToken?: string;
   favoritesId: string;
+  checkOutId: string;
+  isAdmin: boolean;
 }
 
 export interface iProduct {

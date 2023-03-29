@@ -48,6 +48,11 @@ export default {
           userId: createCart.userId,
         },
       });
+      const createCheckOut = await prisma.checkOut.create({
+        data: {
+          userId: createUser.userId,
+        },
+      });
 
       const accessToken = generateAccessToken(
         createUser.userId,
@@ -67,6 +72,7 @@ export default {
         cartId: createCart.cartId,
         accessToken,
         favoritesId: createFavorites.favotiresId,
+        checkOutId: createCheckOut.checkOutId,
       });
     } catch (error) {
       console.log(error);
@@ -89,6 +95,7 @@ export default {
           favoritesId: {
             include: { favoriteItems: true },
           },
+          checkouts: true,
         },
       });
 
@@ -107,11 +114,13 @@ export default {
         });
       }
 
-      const { password, cartId, favoritesId, ...details } = isUserExist;
+      const { password, cartId, favoritesId, checkouts, ...details } =
+        isUserExist;
       const accessToken = generateAccessToken(
         isUserExist.userId,
         favoritesId?.favotiresId
       );
+
       const refreshToken = generateRefreshToken(
         isUserExist.userId,
         favoritesId?.favotiresId
@@ -123,6 +132,7 @@ export default {
         cartId: cartId?.cartId,
         accessToken,
         favoritesId: favoritesId?.favotiresId,
+        checkOutId: checkouts?.checkOutId,
       });
     } catch (error) {
       console.log(error);

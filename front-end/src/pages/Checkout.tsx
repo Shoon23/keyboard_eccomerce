@@ -11,6 +11,8 @@ function Checkout({ cart, price }: Props) {
   const userId = useAuthStore((state) => state.userId);
   const email = useAuthStore((state) => state.email);
   const cartId = useAuthStore((state) => state.cartId);
+  const checkOutId = useAuthStore((state) => state.checkOutId);
+  console.log(checkOutId);
   const [isCheckOut, setIsCheckOut] = useState(false);
   const handleCheckOut = async () => {
     setIsCheckOut(true);
@@ -29,6 +31,7 @@ function Checkout({ cart, price }: Props) {
       userId,
       email,
       cartId,
+      checkOutId,
     };
 
     try {

@@ -15,6 +15,8 @@ const initialState = {
   cartId: "",
   accessToken: "",
   favoritesId: "",
+  isAdmin: false,
+  checkOutId: "",
 };
 
 const useAuthStore = create<State & Actions>()((set) => ({
