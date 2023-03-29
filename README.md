@@ -13,6 +13,7 @@
     frontend server will run at http://locahost:5173
     
 ### Backend
+    open new terminal
     cd back-end
     npm install
     npm run dev  
