@@ -10,5 +10,6 @@ router.delete(
   "/favorites/delete/:favoriteItemId",
   userController.removeFavorite
 );
+router.get("/myorders/:checkOutId", userController.getAllOrders);
 
 export default router;

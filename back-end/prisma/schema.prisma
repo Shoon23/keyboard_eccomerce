@@ -35,7 +35,7 @@ model Orders {
   checkout CheckOut @relation(fields: [checkOutId],references: [checkOutId])
   orders          OrderItem[]
   shippingAddress ShippingAddress?
-  status String?
+  status String? @default("Preparing")
 
 }
 

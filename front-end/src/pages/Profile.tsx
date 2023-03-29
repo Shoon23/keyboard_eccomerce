@@ -31,7 +31,7 @@ function Profile() {
   return (
     <main
       ref={pageRef}
-      className="flex min-h-screen flex-col place-items-center items-stretch gap-3 p-3 md:p-20"
+      className="flex min-h-screen flex-col place-items-center items-stretch gap-3 p-3 md:p-10 lg:p-20"
     >
       <div className="flex justify-between text-white">
         <h1 className=" md:text-3xl">My Account</h1>
@@ -43,7 +43,7 @@ function Profile() {
         </button>
       </div>
       <section className="flex h-[660px] flex-col gap-10 md:h-96 md:flex-row">
-        <aside className="flex flex-col place-items-center bg-white p-10 md:w-1/3 md:py-20">
+        <aside className="flex flex-col place-items-center bg-white p-10 md:py-20">
           <h1 className="text-2xl">{firstName + " " + lastName}</h1>
           <h3 className="text-sm text-gray-400">{email}</h3>
           <div className="mt-3 flex flex-col">

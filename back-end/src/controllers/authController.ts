@@ -161,6 +161,7 @@ export default {
         include: {
           cartId: true,
           favoritesId: true,
+          checkouts: true,
         },
       });
 
@@ -170,7 +171,7 @@ export default {
         });
       }
 
-      const { password, cartId, favoritesId, ...details } = getUser;
+      const { password, cartId, favoritesId, checkouts, ...details } = getUser;
       const newAccessToken = generateAccessToken(
         userId,
         favoritesId?.favotiresId
@@ -187,6 +188,7 @@ export default {
         cartId: cartId?.cartId,
         accessToken: newAccessToken,
         favoritesId: favoritesId?.favotiresId,
+        checkOutId: checkouts?.checkOutId,
       });
     } catch (error: any) {
       res.status(403).json({

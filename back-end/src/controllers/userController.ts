@@ -83,4 +83,26 @@ export default {
       });
     }
   },
+  async getAllOrders(req: Request, res: Response) {
+    const checkOutId = req.params.checkOutId;
+
+    try {
+      const getOrders = await prisma.orders.findMany({
+        where: {
+          checkOutId,
+        },
+        include: {
+          orders: true,
+          shippingAddress: true,
+        },
+      });
+
+      res.status(200).json(getOrders);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "Something Went Wrong",
+      });
+    }
+  },
 };
