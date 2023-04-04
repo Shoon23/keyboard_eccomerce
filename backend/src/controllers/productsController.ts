@@ -3,7 +3,13 @@ import prisma from "../prisma";
 import { iProduct, iReview } from "../types";
 import cloudinaryConn from "../services/cloudinary";
 import fs from "fs/promises";
+const cloudinary = require("cloudinary").v2;
 
+cloudinary.config({
+  cloud_name: "dkarsw8bs",
+  api_key: "827135147154243",
+  api_secret: "rt4nbskpN7AEzO1MizUH2nP-vpI",
+});
 export default {
   async getAllProducts(req: Request, res: Response) {
     try {
@@ -63,8 +69,6 @@ export default {
       productDescription,
     }: iProduct = req.body;
 
-    console.log(productName);
-    console.log(filePath);
     try {
       const createProduct = await prisma.product.create({
         data: {
@@ -97,16 +101,62 @@ export default {
     }
   },
   async updateProduct(req: Request, res: Response) {
-    const { productId, ...productDetails }: iProduct = req.body;
-    try {
-      const updateProduct = await prisma.product.update({
-        where: {
-          productId: productId,
-        },
-        data: productDetails,
-      });
+    const newImg: any = req.files;
+    const { productId, toRemoveImg, ...productDetails } = req.body;
+    // console.log(productDetails);
+    let parseOldImg;
+    if (toRemoveImg) {
+      parseOldImg = Array.isArray(toRemoveImg) ? toRemoveImg : [toRemoveImg];
+    }
 
-      res.status(201).json(updateProduct);
+    try {
+      if (parseOldImg) {
+        const deletImg = parseOldImg?.map((img) => {
+          return prisma.productImg.delete({
+            where: {
+              productImgId: img,
+            },
+          });
+        });
+        await Promise.all(deletImg);
+      }
+
+      if (newImg) {
+        const uploadImg = newImg.map((item: any) => {
+          const upload = cloudinary.uploader.upload(item.path, {
+            public_id: "product_img",
+          });
+
+          return upload;
+        });
+
+        const uploadedImg = await Promise.all(uploadImg);
+
+        const saveImg = uploadedImg.map((item) => {
+          return prisma.productImg.create({
+            data: {
+              productId: productId,
+              imgUrl: item.url,
+            },
+          });
+        });
+        const savedImg = await Promise.all(saveImg);
+
+        const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
+        await Promise.all(deleteImg);
+      }
+      const updateProductDetails = await prisma.product.update({
+        where: {
+          productId,
+        },
+        data: {
+          productName: productDetails.productName,
+          productDescription: productDetails.productDescription,
+          productPrice: Number(productDetails.productPrice),
+          productStock: Number(productDetails.productStock),
+        },
+      });
+      res.status(201).json(updateProductDetails);
     } catch (error) {
       console.log(error);
       res.status(500).json({

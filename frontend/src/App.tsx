@@ -11,6 +11,12 @@ import PersistAuth from "./middleware/PersistAuth";
 import Profile from "./pages/Profile";
 import Checkout from "./pages/Checkout";
 import SuccesCheckout from "./pages/SuccesCheckout";
+import AdminRoutes from "./middleware/AdminRoutes";
+import Admin from "./pages/Admin";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import Navbar from "./components/Admin/Navbar";
+import AdminProducts from "./pages/AdminProducts";
+import AdminProduct from "./pages/AdminProduct";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +59,33 @@ const router = createBrowserRouter([
               {
                 path: "profile",
                 element: <Profile />,
+              },
+              {
+                element: <AdminRoutes />,
+                children: [
+                  {
+                    path: "admin",
+                    element: <Navbar />,
+                    children: [
+                      {
+                        path: "home",
+                        element: <Admin />,
+                      },
+                      {
+                        path: "order",
+                        element: <AdminOrdersPage />,
+                      },
+                      {
+                        path: "products",
+                        element: <AdminProducts />,
+                      },
+                      {
+                        path: "product",
+                        element: <AdminProduct />,
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },

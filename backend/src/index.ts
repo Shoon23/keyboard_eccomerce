@@ -12,6 +12,7 @@ import {
   userRoutes,
   stripeRoutes,
   webhookRoutes,
+  adminRoutes,
 } from "./routes";
 import verifyAccessToken from "./middleware/verifyAccessToken";
 
@@ -33,6 +34,7 @@ app.use("/stripe", stripeRoutes);
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
 app.use(verifyAccessToken);
+app.use("/admin", adminRoutes);
 app.use("/cart", cartRoutes);
 app.use("/user", userRoutes);
 

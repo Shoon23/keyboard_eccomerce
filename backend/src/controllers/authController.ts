@@ -56,11 +56,11 @@ export default {
 
       const accessToken = generateAccessToken(
         createUser.userId,
-        createFavorites.favotiresId
+        createUser.isAdmin
       );
       const refreshToken = generateRefreshToken(
         createUser.userId,
-        createFavorites.favotiresId
+        createUser.isAdmin
       );
 
       const { password, ...details } = createUser;
@@ -118,12 +118,12 @@ export default {
         isUserExist;
       const accessToken = generateAccessToken(
         isUserExist.userId,
-        favoritesId?.favotiresId
+        isUserExist.isAdmin
       );
 
       const refreshToken = generateRefreshToken(
         isUserExist.userId,
-        favoritesId?.favotiresId
+        isUserExist.isAdmin
       );
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
 
@@ -172,14 +172,8 @@ export default {
       }
 
       const { password, cartId, favoritesId, checkouts, ...details } = getUser;
-      const newAccessToken = generateAccessToken(
-        userId,
-        favoritesId?.favotiresId
-      );
-      const newRefreshToken = generateRefreshToken(
-        userId,
-        favoritesId?.favotiresId
-      );
+      const newAccessToken = generateAccessToken(userId, getUser.isAdmin);
+      const newRefreshToken = generateRefreshToken(userId, getUser.isAdmin);
 
       res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
 

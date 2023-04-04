@@ -4,6 +4,7 @@ import productRoutes from "./productRoutes";
 import userRoutes from "./userRoutes";
 import stripeRoutes from "./stripeRoutes";
 import webhookRoutes from "./webhooksRoutes";
+import adminRoutes from "./adminRoutes";
 
 export {
   authRoutes,
@@ -12,4 +13,5 @@ export {
   userRoutes,
   stripeRoutes,
   webhookRoutes,
+  adminRoutes,
 };

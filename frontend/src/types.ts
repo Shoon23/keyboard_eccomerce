@@ -52,3 +52,28 @@ export interface iProductReview {
   productId: string;
   user: iUser;
 }
+
+export interface iOrderItem {
+  currency: string;
+  orderItemId: string;
+  ordersId: string;
+  price: string;
+  productId: string;
+  quantity: number;
+  status: string;
+  product: iProduct;
+}
+
+export interface iCheckOut {
+  checkOutId: string;
+  user: iUser;
+  userId: string;
+}
+export interface iOrder {
+  amount: string;
+  checkOutId: string;
+  checkout: iCheckOut;
+  ordersId: string;
+  status: string | undefined;
+  orderItems: Array<iOrderItem>;
+}
