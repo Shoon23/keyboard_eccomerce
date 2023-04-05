@@ -16,6 +16,8 @@ function MyOrders() {
     try {
       const res = await api.get(`/user/myorders/${checkOutId}`);
       console.log(res);
+
+      console.log(res.data);
       setCheckOuts(res.data);
     } catch (error) {
       console.log(error);
@@ -38,23 +40,23 @@ function MyOrders() {
               <h1>Order #{idx + 1}</h1>
               <div className="">
                 <h1 className="text-gray-500">
-                  Delivery Status: {orders.status}
-                  <span className="text-black"> Preparing</span>
+                  Delivery Status:
+                  <span className="text-black"> {orders.status}</span>
                 </h1>
                 <h1 className="text-gray-500">
-                  Total:{" "}
+                  Total:
                   <span className="text-yellow-500"> P {orders.amount}</span>
                 </h1>
               </div>
             </div>
 
-            {orders?.orders?.map((orderDetails: any) => (
+            {orders?.orderItems?.map((orderDetails: any) => (
               <div
                 key={orderDetails.orderItemId}
                 className="mb-1 flex gap-10 hover:bg-gray-200"
               >
                 <img
-                  src={productImg.productImg1}
+                  src={orderDetails.product.productImg[0].imgUrl || ""}
                   alt=""
                   className="h-24 w-24"
                 />

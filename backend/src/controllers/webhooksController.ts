@@ -22,7 +22,6 @@ export default {
     switch (event.type) {
       case "checkout.session.completed":
         const checkoutSessionCompleted: any = event.data.object;
-        console.log(checkoutSessionCompleted);
         try {
           await prisma.shippingAddress.create({
             data: {
@@ -49,9 +48,6 @@ export default {
           },
         });
         break;
-
-      default:
-        console.log(`Unhandled event type ${event.type}`);
     }
 
     res.send().end();

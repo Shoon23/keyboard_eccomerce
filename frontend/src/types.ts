@@ -35,6 +35,7 @@ export interface iProduct {
   productName: string;
   productPrice: number;
   productStock: number;
+  isDelete: boolean;
 }
 
 export interface iFavorite {

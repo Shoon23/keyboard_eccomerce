@@ -17,6 +17,8 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import Navbar from "./components/Admin/Navbar";
 import AdminProducts from "./pages/AdminProducts";
 import AdminProduct from "./pages/AdminProduct";
+import AdminAddProduct from "./pages/AdminAddProduct";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,10 @@ const router = createBrowserRouter([
       {
         element: <Layout />,
         children: [
+          {
+            path: "*",
+            element: <NotFoundPage />,
+          },
           {
             path: "/",
             element: <Home />,
@@ -61,6 +67,7 @@ const router = createBrowserRouter([
                 element: <Profile />,
               },
               {
+                errorElement: <NotFoundPage />,
                 element: <AdminRoutes />,
                 children: [
                   {
@@ -82,6 +89,10 @@ const router = createBrowserRouter([
                       {
                         path: "product",
                         element: <AdminProduct />,
+                      },
+                      {
+                        path: "product/add",
+                        element: <AdminAddProduct />,
                       },
                     ],
                   },

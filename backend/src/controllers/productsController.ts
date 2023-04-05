@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { iProduct, iReview } from "../types";
-import cloudinaryConn from "../services/cloudinary";
+
+import { stripe } from "../services/stripe";
 import fs from "fs/promises";
+
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
@@ -10,6 +12,7 @@ cloudinary.config({
   api_key: "827135147154243",
   api_secret: "rt4nbskpN7AEzO1MizUH2nP-vpI",
 });
+
 export default {
   async getAllProducts(req: Request, res: Response) {
     try {
@@ -61,7 +64,7 @@ export default {
     }
   },
   async addProduct(req: Request, res: Response) {
-    const filePath = req.file?.path as string;
+    const newImg: any = req.files;
     const {
       productName,
       productPrice,
@@ -69,31 +72,57 @@ export default {
       productDescription,
     }: iProduct = req.body;
 
+    let savedImg: any[] = [];
+
     try {
+      const newStripeProducts = await stripe.products.create({
+        name: productName,
+        default_price_data: {
+          currency: "php",
+          unit_amount: productPrice * 100,
+        },
+      });
+
       const createProduct = await prisma.product.create({
         data: {
           productName: productName,
-          productPrice: productPrice,
-          productStock: productStock,
+          productPrice: Number(productPrice),
+          productStock: Number(productStock),
           productDescription: productDescription,
-          productPriceId: "",
+          productPriceId: newStripeProducts.default_price as string,
         },
       });
+      if (newImg) {
+        const uploadImg = newImg.map((item: any) => {
+          const upload = cloudinary?.uploader?.upload(item.path, {
+            public_id: "product_img",
+          });
+          console.log(upload);
 
-      const response = await cloudinaryConn().uploader.upload(filePath, {
-        public_id: "product_img",
-      });
+          return upload;
+        });
 
-      const createProductImg = await prisma.productImg.create({
-        data: {
-          productId: createProduct.productId,
-          imgUrl: response.data.secure_url,
-        },
-      });
-      await fs.unlink(filePath);
+        const uploadedImg = await Promise.all(uploadImg);
+        console.log(uploadedImg);
 
-      res.status(201).json({ ...createProduct, img: createProductImg.imgUrl });
+        const saveImg = uploadedImg.map((item) => {
+          return prisma.productImg.create({
+            data: {
+              productId: createProduct.productId,
+              imgUrl: item.url,
+            },
+          });
+        });
+        savedImg = await Promise.all(saveImg);
+
+        const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
+        await Promise.all(deleteImg);
+      }
+
+      res.status(201).json({ ...createProduct, productImg: savedImg });
     } catch (error) {
+      const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
+      await Promise.all(deleteImg);
       console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
@@ -103,7 +132,7 @@ export default {
   async updateProduct(req: Request, res: Response) {
     const newImg: any = req.files;
     const { productId, toRemoveImg, ...productDetails } = req.body;
-    // console.log(productDetails);
+
     let parseOldImg;
     if (toRemoveImg) {
       parseOldImg = Array.isArray(toRemoveImg) ? toRemoveImg : [toRemoveImg];
@@ -131,7 +160,6 @@ export default {
         });
 
         const uploadedImg = await Promise.all(uploadImg);
-
         const saveImg = uploadedImg.map((item) => {
           return prisma.productImg.create({
             data: {
@@ -159,6 +187,8 @@ export default {
       res.status(201).json(updateProductDetails);
     } catch (error) {
       console.log(error);
+      const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
+      await Promise.all(deleteImg);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -167,9 +197,12 @@ export default {
   async deleteProduct(req: Request, res: Response) {
     const productId = req.params.productId;
     try {
-      await prisma.product.delete({
+      await prisma.product.update({
         where: {
           productId,
+        },
+        data: {
+          isDelete: true,
         },
       });
 

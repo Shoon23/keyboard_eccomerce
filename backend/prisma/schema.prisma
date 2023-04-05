@@ -111,6 +111,7 @@ model Product {
   productStock       Int
   productDescription String           @db.LongText
   productPriceId     String           @db.VarChar(255)
+  isDelete Boolean @default(false)
   cartItem           CartItem[]
   favoriteItems      FavoriteItem[]
   productImg         ProductImg[]

@@ -11,6 +11,7 @@ function Headers({ isHeroInView }: Props) {
   const userId = useAuthStore((state) => state.userId);
   const firstName = useAuthStore((state) => state.firstName);
   const lastName = useAuthStore((state) => state.lastName);
+  const isAdmin = useAuthStore((state) => state.isAdmin);
   const navMenu = [
     {
       name: "Home",
@@ -19,10 +20,6 @@ function Headers({ isHeroInView }: Props) {
     {
       name: "Products",
       route: "products",
-    },
-    {
-      name: "About",
-      route: "about",
     },
   ];
   const [isShowNav, setIsShowNav] = useState<boolean>(false);
@@ -84,6 +81,17 @@ function Headers({ isHeroInView }: Props) {
                 </li>
               )
             )}
+            {isAdmin && (
+              <li>
+                <Link
+                  onClick={() => setIsShowNav(false)}
+                  to={"/admin/home"}
+                  className="text-lg text-black duration-300 ease-in "
+                >
+                  Admin
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
         {/*  Mobile Navigation Hamburger Items End*/}
@@ -130,6 +138,17 @@ function Headers({ isHeroInView }: Props) {
                 </Link>
               </li>
             )
+          )}
+          {isAdmin && (
+            <li>
+              <Link
+                onClick={() => setIsShowNav(false)}
+                to={"/admin/home"}
+                className="text-lg duration-300 ease-in hover:text-black"
+              >
+                Admin
+              </Link>
+            </li>
           )}
         </ul>
         <ul className=" flex gap-3">

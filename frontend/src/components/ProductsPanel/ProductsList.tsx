@@ -7,17 +7,22 @@ interface Props {
 }
 
 function ProductsList({ pageRef, products }: Props) {
+  console.log(products);
   return (
     <section
       ref={pageRef}
       className="flex min-h-screen flex-wrap place-content-center gap-2 p-2"
     >
-      {products.map((productDetails: iProduct) => (
-        <ProductCard
-          key={productDetails.productId}
-          productDetail={productDetails}
-        />
-      ))}
+      {products.map((productDetails: iProduct) => {
+        return (
+          !productDetails.isDelete && (
+            <ProductCard
+              key={productDetails.productId}
+              productDetail={productDetails}
+            />
+          )
+        );
+      })}
     </section>
   );
 }

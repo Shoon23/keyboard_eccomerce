@@ -92,8 +92,16 @@ export default {
           checkOutId,
         },
         include: {
-          orders: true,
           shippingAddress: true,
+          orderItems: {
+            include: {
+              product: {
+                include: {
+                  productImg: true,
+                },
+              },
+            },
+          },
         },
       });
 

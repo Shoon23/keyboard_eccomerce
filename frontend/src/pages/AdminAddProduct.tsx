@@ -1,36 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { usePageRef } from "../hooks/usePageRef";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import InputBox from "../components/Admin/InputBox";
-import { iProduct } from "../types";
+import { Link, useNavigate } from "react-router-dom";
 import { Plus, X } from "react-bootstrap-icons";
+import axios, { isAxiosError } from "axios";
+import useAuthStore from "../store/authStore";
+import InputBox from "../components/Admin/InputBox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useAuthStore from "../store/authStore";
-import axios, { isAxiosError } from "axios";
-function AdminProduct() {
+
+function AdminAddProduct() {
   const { pageRef } = usePageRef();
-  const accessToken = useAuthStore((state) => state.accessToken) as string;
-  const location = useLocation();
-  const product: iProduct = location.state.product;
-  const navigate = useNavigate();
+  const accessToken = useAuthStore((state) => state.accessToken);
   const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [productName, setProductName] = useState<string>(product.productName);
-  const [productPrice, setProductPrice] = useState<number>(
-    product.productPrice
-  );
-  const [productStock, setProductStock] = useState<number>(
-    product.productStock
-  );
-  const [productDescription, setProductDescription] = useState<string>(
-    product.productDescription
-  );
+  const [productName, setProductName] = useState<string>("");
+  const [productPrice, setProductPrice] = useState<number>(0);
+  const [productStock, setProductStock] = useState<number>(0);
+  const [productDescription, setProductDescription] = useState<string>("");
   const [productImg, setProductImg] = useState<
-    { imgUrl: string; productId: string; productImgId: string }[]
-  >(product.productImg);
-  const [toRemoveImg, setToRemoveImg] = useState<any[]>([]);
-  const [newProductImg, setNewProductImg] = useState<Array<Blob | null>>([]);
+    { imgUrl: string; imgName: string }[]
+  >([]);
   const [file, setFile] = useState<Array<File>>([]);
+  const [err, setErr] = useState<string>("");
+  const navigate = useNavigate();
+  const [isAdd, setIsAdd] = useState<boolean>(false);
 
   const api = axios.create({
     baseURL: import.meta.env.VITE_API_DOMAIN,
@@ -44,22 +36,32 @@ function AdminProduct() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsAdd(true);
+    if (
+      !productName ||
+      !productDescription ||
+      !productImg ||
+      !productPrice ||
+      !productStock ||
+      !file
+    ) {
+      setErr("All Fields Are Required");
+      return;
+    }
+
     const formData = new FormData();
-    formData.append("productId", product.productId);
     formData.append("productName", productName);
     formData.append("productPrice", productPrice.toString());
     formData.append("productStock", productStock.toString());
     formData.append("productDescription", productDescription);
-    toRemoveImg.forEach((img) => {
-      formData.append("toRemoveImg", img);
-    });
     file.forEach((img) => {
       formData.append("images", img);
     });
     try {
-      const res = await api.put("/products/update", formData);
-      navigate("/admin/products");
+      const res = await api.post("/products/add", formData);
+      navigate("/admin/home");
     } catch (error) {
+      setIsAdd(false);
       if (isAxiosError(error)) {
         if (error.response?.status === 403) {
           navigate("/login");
@@ -78,45 +80,33 @@ function AdminProduct() {
       }
     }
   };
-
   const handleaddImage = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     hiddenFileInput?.current?.click();
   };
-
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageFile = e?.target?.files?.item(0);
     console.log(imageFile);
     if (!imageFile) return;
     setFile((prev) => [...prev, imageFile]);
-    setNewProductImg((prev: any) => [
+    setProductImg((prev: any) => [
       ...prev,
       { imgUrl: URL.createObjectURL(imageFile), imgName: imageFile.name },
     ]);
   };
 
-  const handleRemoveImg = (imgId: string) => {
+  const handleRemoveImg = (imgName: string) => {
     setProductImg((prev) => {
       return prev.filter((item) => {
-        return item.productImgId !== imgId;
-      });
-    });
-    setToRemoveImg((prev) => [...prev, imgId]);
-  };
-
-  const handleRemoveNewImg = (imgName: string) => {
-    setNewProductImg((prev) => {
-      return prev.filter((item: any) => {
         return item.imgName !== imgName;
       });
     });
     setFile((prev) => {
-      return prev.filter((item: any) => {
-        return item.imgName !== imgName;
+      return prev.filter((item) => {
+        return item.name !== imgName;
       });
     });
   };
-
   return (
     <main ref={pageRef}>
       <section className="min-h-screen bg-white">
@@ -155,18 +145,7 @@ function AdminProduct() {
               <div className="relative">
                 <img src={img.imgUrl} className="h-40 w-40" />
                 <X
-                  onClick={() => handleRemoveImg(img.productImgId)}
-                  className="absolute top-0 left-32 cursor-pointer"
-                  color="red"
-                  size={30}
-                />
-              </div>
-            ))}
-            {newProductImg.map((img: any) => (
-              <div className="relative">
-                <img src={img.imgUrl} className="h-40 w-40" />
-                <X
-                  onClick={() => handleRemoveNewImg(img.imgName)}
+                  onClick={() => handleRemoveImg(img.imgName)}
                   className="absolute top-0 left-32 cursor-pointer"
                   color="red"
                   size={30}
@@ -189,16 +168,35 @@ function AdminProduct() {
               Add Img
             </button>
           </section>
-          <section className="flex justify-end">
+          <section className="flex justify-end gap-1">
             <Link to={"/admin/products"}>
               <button className="btn-ghost btn-active btn">Cancel</button>
             </Link>
-            <button className="btn-success btn text-white">Update</button>
+            <button disabled={isAdd} className="btn-info btn text-white">
+              Add Product
+            </button>
           </section>
+          {err && (
+            <h1 className="flex place-content-center text-2xl text-red-500">
+              {err}
+            </h1>
+          )}
         </form>
       </section>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </main>
   );
 }
 
-export default AdminProduct;
+export default AdminAddProduct;

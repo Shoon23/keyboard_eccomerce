@@ -18,7 +18,7 @@ function ProductCard({ productDetail }: Props) {
       <div className=" flex flex-col gap-2 p-2">
         <h1 className="text-sm md:text-base">{productDetail.productName}</h1>
         <h2 className="text-xs text-yellow-500 md:text-sm">
-          ${productDetail.productPrice}
+          P{productDetail.productPrice}
         </h2>
       </div>
     </Link>

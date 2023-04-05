@@ -1,6 +1,7 @@
 import React from "react";
 import heroIcon from "../../assets/img/hero-icon-3.png";
 import { ChevronDown } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 
 interface Props {
   heroRef: (node?: Element | null | undefined) => void;
@@ -21,9 +22,11 @@ function Hero({ heroRef }: Props) {
           porro consequuntur eos similique repudiandae adipisci enim ratione
           dolorum ducimus, voluptas exercitationem, reprehenderit dicta.
         </p>
-        <button className="h-10 w-36 self-center rounded-2xl bg-yellow-500 text-sm  shadow-lg hover:bg-yellow-600 hover:duration-300 hover:ease-in">
-          Shop Now
-        </button>
+        <Link to={"/products"}>
+          <button className="h-10 w-36 self-center rounded-2xl bg-yellow-500 text-sm  shadow-lg hover:bg-yellow-600 hover:duration-300 hover:ease-in">
+            Shop Now
+          </button>
+        </Link>
       </div>
       <div className="drop-shadow-2xl	lg:h-5/6 lg:w-1/2 ">
         <img src={heroIcon} className="object-cover " alt="" />

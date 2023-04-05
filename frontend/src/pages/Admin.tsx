@@ -28,8 +28,6 @@ function Admin() {
     getCheckOuts();
   }, []);
 
-  console.log("gag0");
-
   const { pageRef } = usePageRef();
   return (
     <main ref={pageRef}>

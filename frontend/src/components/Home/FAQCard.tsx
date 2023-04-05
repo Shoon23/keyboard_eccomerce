@@ -13,7 +13,7 @@ function FAQCard({ isSelected, setIsSelected, question, answer, idx }: Props) {
   return (
     <div
       key={idx}
-      className={`flex w-5/6 flex-col rounded-lg p-5  text-black shadow-md transition-all duration-300 ease-in  last:mb-2 md:w-4/6 lg:w-3/6 ${
+      className={`flex w-5/6 cursor-pointer flex-col rounded-lg p-5  text-black shadow-md transition-all duration-300 ease-in  last:mb-2 md:w-4/6 lg:w-3/6 ${
         isSelected === idx ? `bg-white` : `bg-gray-200`
       }`}
     >
