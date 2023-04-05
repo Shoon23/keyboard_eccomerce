@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import useAuthStore from "../store/authStore";
 import product from "../assets";
 import CartCard from "../components/Cart/CartCard";
-import { apiPrivate } from "../utils/axiosBase";
 import { usePageRef } from "../hooks/usePageRef";
-import { useInterceptors } from "../hooks/useInterceptors";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import Checkout from "./Checkout";
+import { usePrivateApi } from "../hooks/usePrivateApi";
+import { CircleHalf } from "react-bootstrap-icons";
 
 function Cart() {
   const cartId = useAuthStore((state) => state.cartId);
@@ -17,8 +17,7 @@ function Cart() {
   const navitage = useNavigate();
   const { pageRef } = usePageRef();
 
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [cart, setCart] = useState<any>([]);
@@ -49,7 +48,9 @@ function Cart() {
             cart.length === 0 && `flex place-content-center place-items-center`
           }`}
         >
-          {cart.length === 0 ? (
+          {isLoading ? (
+            <CircleHalf className="animate-spin fill-sky-600 " size={50} />
+          ) : cart.length === 0 ? (
             <h1 className="text-xl text-gray-500">Your Cart is Empty</h1>
           ) : (
             <>

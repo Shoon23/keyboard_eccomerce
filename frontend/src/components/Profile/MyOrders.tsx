@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from "react";
-import productImg from "../../assets";
-import { apiPrivate } from "../../utils/axiosBase";
-import { useInterceptors } from "../../hooks/useInterceptors";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../../store/authStore";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 
 function MyOrders() {
   const userId = useAuthStore((state) => state.userId);
   const checkOutId = useAuthStore((state) => state.checkOutId);
   const accessToken = useAuthStore((state) => state.accessToken) as string;
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
   const [checkouts, setCheckOuts] = useState<any[]>([]);
 
   const getOrders = async () => {
     try {
       const res = await api.get(`/user/myorders/${checkOutId}`);
-      console.log(res);
-
-      console.log(res.data);
       setCheckOuts(res.data);
     } catch (error) {
-      console.log(error);
+      toast.warn("Something Went Wrong Please Reload The Page", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -82,6 +87,18 @@ function MyOrders() {
           </div>
         ))}
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </section>
   );
 }

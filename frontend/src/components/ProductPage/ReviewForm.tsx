@@ -6,9 +6,9 @@ import StarList from "./StarList";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { iProductReview } from "../../types";
-import { api, apiPrivate } from "../../utils/axiosBase";
-import { useInterceptors } from "../../hooks/useInterceptors";
+
 import { useNavigate } from "react-router-dom";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 interface Props {
   setIsAddReview: React.Dispatch<React.SetStateAction<boolean>>;
   productId: string;
@@ -18,8 +18,7 @@ interface Props {
 function ReviewForm({ setIsAddReview, productId, setProductReviews }: Props) {
   const { userId, clearUserDetails, accessToken, firstName, lastName } =
     useAuthStore();
-  const axios = apiPrivate(accessToken as string);
-  const api = useInterceptors(axios, accessToken as string);
+  const api = usePrivateApi(accessToken as string, false);
   const navigate = useNavigate();
   const star = [1, 2, 3, 4, 5];
   const [error, setError] = useState<{ message: string }>({

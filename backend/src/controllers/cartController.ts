@@ -25,7 +25,6 @@ export default {
 
       res.status(200).json({ cartItem, totalPrice });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -43,7 +42,6 @@ export default {
       });
       res.status(201).json(createCartItem);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -63,7 +61,6 @@ export default {
         message: "Item Deleted",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -82,7 +79,6 @@ export default {
       });
       res.status(201).json(updateCartItem);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });

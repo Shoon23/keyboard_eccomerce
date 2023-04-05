@@ -7,8 +7,6 @@ const router = Router();
 router.post("/create-checkout-session", async (req, res) => {
   const orders = req.body;
 
-  console.log(orders.checkOutId);
-
   const line_items: any[] = [];
 
   const amount = orders.price + 50;
@@ -65,7 +63,9 @@ router.post("/create-checkout-session", async (req, res) => {
     });
     res.send({ url: session.url });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      message: "Something Went Wrong",
+    });
   }
 });
 

@@ -8,6 +8,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthStore from "../store/authStore";
 import axios, { isAxiosError } from "axios";
+import { usePrivateApi } from "../hooks/usePrivateApi";
+
 function AdminProduct() {
   const { pageRef } = usePageRef();
   const accessToken = useAuthStore((state) => state.accessToken) as string;
@@ -31,16 +33,7 @@ function AdminProduct() {
   const [toRemoveImg, setToRemoveImg] = useState<any[]>([]);
   const [newProductImg, setNewProductImg] = useState<Array<Blob | null>>([]);
   const [file, setFile] = useState<Array<File>>([]);
-
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_DOMAIN,
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true,
-  });
+  const api = usePrivateApi(accessToken, true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,7 +79,7 @@ function AdminProduct() {
 
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageFile = e?.target?.files?.item(0);
-    console.log(imageFile);
+
     if (!imageFile) return;
     setFile((prev) => [...prev, imageFile]);
     setNewProductImg((prev: any) => [

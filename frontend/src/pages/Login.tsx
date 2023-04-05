@@ -25,10 +25,7 @@ function Login() {
   const onSubmit = async (formData: iLogin) => {
     try {
       const res = await api.post("/auth/login", formData);
-
-      console.log(res.data);
       addUserDetails(res.data);
-      console.log(res.data);
 
       navigate(pathname);
     } catch (error) {

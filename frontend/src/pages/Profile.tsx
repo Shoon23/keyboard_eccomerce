@@ -5,17 +5,13 @@ import product from "../assets";
 import { usePageRef } from "../hooks/usePageRef";
 import PersonalInfo from "../components/Profile/PersonalInfo";
 import Favorites from "../components/Profile/Favorites";
-import { apiPrivate } from "../utils/axiosBase";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useInterceptors } from "../hooks/useInterceptors";
 import MyOrders from "../components/Profile/MyOrders";
+import { usePrivateApi } from "../hooks/usePrivateApi";
 
 function Profile() {
   const { firstName, lastName, email, accessToken, clearUserDetails } =
     useAuthStore();
-  const axios = apiPrivate(accessToken as string);
-  const api = useInterceptors(axios, accessToken as string);
+  const api = usePrivateApi(accessToken as string, false);
   const { pageRef } = usePageRef();
   const [isShow, setIsShow] = useState<string>("personal");
   const navigate = useNavigate();

@@ -7,10 +7,10 @@ import useAuthStore from "../store/authStore";
 import InputBox from "../components/Admin/InputBox";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { usePrivateApi } from "../hooks/usePrivateApi";
 function AdminAddProduct() {
   const { pageRef } = usePageRef();
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const accessToken = useAuthStore((state) => state.accessToken) as string;
   const hiddenFileInput = useRef<HTMLInputElement>(null);
   const [productName, setProductName] = useState<string>("");
   const [productPrice, setProductPrice] = useState<number>(0);
@@ -24,15 +24,7 @@ function AdminAddProduct() {
   const navigate = useNavigate();
   const [isAdd, setIsAdd] = useState<boolean>(false);
 
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_DOMAIN,
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "multipart/form-data",
-    },
-    withCredentials: true,
-  });
+  const api = usePrivateApi(accessToken, true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,7 +55,7 @@ function AdminAddProduct() {
     } catch (error) {
       setIsAdd(false);
       if (isAxiosError(error)) {
-        if (error.response?.status === 403) {
+        if (error.response?.status === 403 || error.response?.status === 401) {
           navigate("/login");
         } else {
           toast.warn("Something Went Wrong Please Try Again", {
@@ -86,7 +78,7 @@ function AdminAddProduct() {
   };
   const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const imageFile = e?.target?.files?.item(0);
-    console.log(imageFile);
+
     if (!imageFile) return;
     setFile((prev) => [...prev, imageFile]);
     setProductImg((prev: any) => [
@@ -141,8 +133,8 @@ function AdminAddProduct() {
             type="number"
           />
           <section className="mt-2 flex gap-1">
-            {productImg.map((img) => (
-              <div className="relative">
+            {productImg.map((img, idx: number) => (
+              <div key={idx} className="relative">
                 <img src={img.imgUrl} className="h-40 w-40" />
                 <X
                   onClick={() => handleRemoveImg(img.imgName)}

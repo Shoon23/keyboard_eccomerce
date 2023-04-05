@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { Plus, Dash, X } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
-import { apiPrivate } from "../../utils/axiosBase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useInterceptors } from "../../hooks/useInterceptors";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 import { isAxiosError } from "axios";
 
 interface Props {
@@ -15,11 +14,10 @@ interface Props {
 }
 
 function CartCard({ cartItem, setCart, setPrice }: Props) {
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const accessToken = useAuthStore((state) => state.accessToken) as string;
   const clearUserDetails = useAuthStore((state) => state.clearUserDetails);
   const [quantity, setQuantity] = useState<any>(cartItem?.quantity);
-  const axios = apiPrivate(accessToken as string);
-  const api = useInterceptors(axios, accessToken as string);
+  const api = usePrivateApi(accessToken, false);
   const navigate = useNavigate();
 
   const handleRemoveCartItem = async () => {

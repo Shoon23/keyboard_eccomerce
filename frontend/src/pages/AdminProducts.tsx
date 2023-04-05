@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiPrivate } from "../utils/axiosBase";
-import { useInterceptors } from "../hooks/useInterceptors";
+
 import useAuthStore from "../store/authStore";
 import { usePageRef } from "../hooks/usePageRef";
 import { iProduct } from "../types";
@@ -8,16 +7,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isAxiosError } from "axios";
+import { usePrivateApi } from "../hooks/usePrivateApi";
 
 function AdminProducts() {
   const accessToken = useAuthStore((state) => state.accessToken) as string;
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
   const { pageRef } = usePageRef();
   const [products, setProducts] = useState<iProduct[]>([]);
   const navigate = useNavigate();
-
-  console.log("gago");
 
   const getProducts = async () => {
     try {

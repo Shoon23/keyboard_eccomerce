@@ -5,10 +5,26 @@ import useAuthStore from "../store/authStore";
 
 import { api } from "../utils/axiosBase";
 
-export function useInterceptors(
-  axios: AxiosInstance,
-  accessToken: string
+export function usePrivateApi(
+  accessToken: string,
+  isMultiForm: boolean
 ): AxiosInstance {
+  const headers = isMultiForm
+    ? {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
+      }
+    : {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+  const axiosInstance = axios.create({
+    baseURL: import.meta.env.VITE_API_DOMAIN,
+    headers: headers,
+    withCredentials: true,
+  });
   const addUserDetails = useAuthStore((state) => state.addUserDetails);
 
   const onRequest = async (config: AxiosRequestConfig) => {
@@ -17,11 +33,9 @@ export function useInterceptors(
     const token_expiration = new Date(1000 * decoded?.exp).toLocaleString();
     const current_time = new Date().toLocaleString();
 
-    console.log("from the interceptors");
     if (current_time > token_expiration) {
       const user = await useRefreshToken();
 
-      console.log("token refresh");
       addUserDetails(user);
       config.headers!.Authorization = `Bearer ${user?.accessToken}`;
     }
@@ -32,5 +46,5 @@ export function useInterceptors(
   };
 
   axios.interceptors.request.use(onRequest, onRequestError);
-  return axios;
+  return axiosInstance;
 }

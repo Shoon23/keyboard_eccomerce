@@ -19,8 +19,6 @@ export default {
 
       res.status(201).json(addReview);
     } catch (error) {
-      console.log(error);
-
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -45,7 +43,6 @@ export default {
 
       res.status(200).json(getfavorites);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -59,7 +56,6 @@ export default {
       });
       res.status(201).json(addFavorite);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -77,7 +73,6 @@ export default {
         message: "Item Removed",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -107,7 +102,6 @@ export default {
 
       res.status(200).json(getOrders);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });

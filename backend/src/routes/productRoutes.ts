@@ -1,6 +1,7 @@
 import { Router } from "express";
 import productsController from "../controllers/productsController";
 import multer from "multer";
+import isAdmin from "../middleware/isAdmin";
 
 const router = Router();
 
@@ -17,6 +18,7 @@ const upload = multer({ storage: storage });
 
 router.get("/", productsController.getAllProducts);
 router.get("/:productId", productsController.getSingleProduct);
+router.use(isAdmin);
 router.post("/add", upload.array("images"), productsController.addProduct);
 router.put("/update", upload.array("images"), productsController.updateProduct);
 router.delete("/delete/:productId", productsController.deleteProduct);

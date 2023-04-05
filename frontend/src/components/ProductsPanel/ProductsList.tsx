@@ -7,7 +7,6 @@ interface Props {
 }
 
 function ProductsList({ pageRef, products }: Props) {
-  console.log(products);
   return (
     <section
       ref={pageRef}

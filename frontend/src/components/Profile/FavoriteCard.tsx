@@ -2,12 +2,12 @@ import React from "react";
 import { X } from "react-bootstrap-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { iFavorite } from "../../types";
-import { apiPrivate } from "../../utils/axiosBase";
-import { useInterceptors } from "../../hooks/useInterceptors";
+
 import useAuthStore from "../../store/authStore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isAxiosError } from "axios";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 
 interface Props {
   favorite: iFavorite;
@@ -17,8 +17,7 @@ interface Props {
 function FavoriteCard({ favorite, setFavorites }: Props) {
   const accessToken = useAuthStore((state) => state.accessToken) as string;
   const clearUserDetails = useAuthStore((state) => state.clearUserDetails);
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
   const navigate = useNavigate();
 
   const handleRemoveFavorites = async () => {

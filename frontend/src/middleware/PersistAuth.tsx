@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import useAuthStore from "../store/authStore";
-import {
-  Navigate,
-  Outlet,
-  redirect,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useRefreshToken } from "../hooks/useRefreshToken";
+import Loading from "../components/Loading";
 
 function PersistAuth() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -26,7 +21,11 @@ function PersistAuth() {
     accessToken ? setIsLoading(false) : verifyToken();
   }, []);
 
-  return isLoading ? <div className="">Loading...</div> : <Outlet />;
+  return isLoading ? (
+    <Loading isWhite={true} isSpinnerBlue={true} />
+  ) : (
+    <Outlet />
+  );
 }
 
 export default PersistAuth;

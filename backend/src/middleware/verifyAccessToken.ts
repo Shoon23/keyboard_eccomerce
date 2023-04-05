@@ -6,14 +6,12 @@ export default function verifyAccessToken(
   res: Response,
   next: NextFunction
 ) {
-  const bearerToken = req.headers.authorization;
-  const PUBLIC_JWT_KEY = process.env.PUBLIC_JWT_KEY as string;
-  const accessToken = bearerToken?.split(" ")[1] as string;
-
   try {
+    const bearerToken = req.headers.authorization;
+    const PUBLIC_JWT_KEY = process.env.PUBLIC_JWT_KEY as string;
+    const accessToken = bearerToken?.split(" ")[1] as string;
     const decoded: any = jwt.verify(accessToken, PUBLIC_JWT_KEY);
-    res.locals.isAdmin = decoded.isAdmin;
-    res.locals.userId = decoded.userId;
+
     next();
   } catch (error) {
     res.status(403).json({

@@ -4,9 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { apiPrivate } from "../../utils/axiosBase";
+
 import useAuthStore from "../../store/authStore";
-import { useInterceptors } from "../../hooks/useInterceptors";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 import OrderCard from "./OrderCard";
 interface Props {
   orders: iOrder[];
@@ -15,8 +15,7 @@ interface Props {
 function OrdersTable({ orders }: Props) {
   const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken) as string;
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
 
   const updateStatus = async (status: string, ordersId: string) => {
     try {

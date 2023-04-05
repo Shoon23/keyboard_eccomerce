@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { api } from "../utils/axiosBase";
 import { iProduct, iProductReview } from "../types";
 import { isAxiosError } from "axios";
+import { CircleHalf } from "react-bootstrap-icons";
 
 function ProductPage() {
   const { productId } = useParams();
@@ -39,8 +40,11 @@ function ProductPage() {
   return (
     <main>
       {isLoading ? (
-        <section ref={pageRef} className="min-h-screen">
-          <h1 className="">Loading...</h1>
+        <section
+          ref={pageRef}
+          className="flex min-h-screen items-center justify-center"
+        >
+          <CircleHalf className="animate-spin fill-white " size={50} />
         </section>
       ) : error ? (
         <section ref={pageRef} className="min-h-screen">
@@ -71,6 +75,7 @@ const initialDetails = {
   productName: "",
   productPrice: 0,
   productStock: 0,
+  isDelete: false,
 };
 
 export default ProductPage;

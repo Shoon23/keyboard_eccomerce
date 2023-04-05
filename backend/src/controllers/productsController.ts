@@ -24,7 +24,6 @@ export default {
       });
       res.status(200).json(products);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -57,7 +56,6 @@ export default {
 
       res.status(200).json(getProduct);
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -97,13 +95,11 @@ export default {
           const upload = cloudinary?.uploader?.upload(item.path, {
             public_id: "product_img",
           });
-          console.log(upload);
 
           return upload;
         });
 
         const uploadedImg = await Promise.all(uploadImg);
-        console.log(uploadedImg);
 
         const saveImg = uploadedImg.map((item) => {
           return prisma.productImg.create({
@@ -123,7 +119,7 @@ export default {
     } catch (error) {
       const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
       await Promise.all(deleteImg);
-      console.log(error);
+
       res.status(500).json({
         message: "Something Went Wrong",
       });
@@ -186,7 +182,6 @@ export default {
       });
       res.status(201).json(updateProductDetails);
     } catch (error) {
-      console.log(error);
       const deleteImg = newImg.map((item: any) => fs.unlink(item.path));
       await Promise.all(deleteImg);
       res.status(500).json({
@@ -210,7 +205,6 @@ export default {
         message: "Product Deleted",
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something Went Wrong",
       });

@@ -75,7 +75,6 @@ export default {
         checkOutId: createCheckOut.checkOutId,
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something went wrong",
       });
@@ -84,7 +83,6 @@ export default {
   async loginController(req: Request, res: Response) {
     const useDetails: iUserDetails = req.body;
 
-    console.log(res.locals.user);
     try {
       const isUserExist = await prisma.user.findUnique({
         where: {
@@ -135,7 +133,6 @@ export default {
         checkOutId: checkouts?.checkOutId,
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         message: "Something went wrong",
       });

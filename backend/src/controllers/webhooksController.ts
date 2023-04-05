@@ -39,14 +39,17 @@ export default {
               status: "completed",
             },
           });
+          await prisma.cartItem.deleteMany({
+            where: {
+              cartId: checkoutSessionCompleted.metadata.cartId,
+            },
+          });
         } catch (error) {
-          console.log(error);
+          return res.status(500).json({
+            message: "Something Went Wrong",
+          });
         }
-        await prisma.cartItem.deleteMany({
-          where: {
-            cartId: checkoutSessionCompleted.metadata.cartId,
-          },
-        });
+
         break;
     }
 

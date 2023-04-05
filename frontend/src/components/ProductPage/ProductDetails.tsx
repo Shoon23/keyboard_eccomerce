@@ -4,9 +4,9 @@ import { Heart, Cart, ChevronUp, ChevronDown } from "react-bootstrap-icons";
 import { iProduct } from "../../types";
 import StarList from "./StarList";
 import useAuthStore from "../../store/authStore";
-import { apiPrivate } from "../../utils/axiosBase";
+
 import { useNavigate } from "react-router-dom";
-import { useInterceptors } from "../../hooks/useInterceptors";
+import { usePrivateApi } from "../../hooks/usePrivateApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { isAxiosError } from "axios";
@@ -25,8 +25,7 @@ function ProductDetails({ pageRef, productDetails, totalReviews }: Props) {
 
   const [quantity, setQuantity] = useState<number>(1);
   const [currImg, setCurrImg] = useState<number>(0);
-  const axios = apiPrivate(accessToken);
-  const api = useInterceptors(axios, accessToken);
+  const api = usePrivateApi(accessToken, false);
   const navigate = useNavigate();
 
   const handleAddToCart = async () => {

@@ -15,6 +15,7 @@ import {
   adminRoutes,
 } from "./routes";
 import verifyAccessToken from "./middleware/verifyAccessToken";
+import isAdmin from "./middleware/isAdmin";
 
 const app = express();
 
@@ -33,11 +34,11 @@ app.use(express.json());
 app.use("/stripe", stripeRoutes);
 app.use("/auth", authRoutes);
 app.use("/products", productRoutes);
+app.use("/admin", isAdmin, adminRoutes);
 app.use(verifyAccessToken);
-app.use("/admin", adminRoutes);
 app.use("/cart", cartRoutes);
 app.use("/user", userRoutes);
 
 app.listen(PORT, () => {
-  console.log(`App running on http://localhost:8080`);
+  console.log(`App running`);
 });
