@@ -27,7 +27,7 @@ export function usePrivateApi(
   });
   const addUserDetails = useAuthStore((state) => state.addUserDetails);
 
-  const onRequest = async (config: AxiosRequestConfig) => {
+  const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
     if (!accessToken) return config;
     const decoded: any = jwt_decode(accessToken);
     const token_expiration = new Date(1000 * decoded?.exp).toLocaleString();
