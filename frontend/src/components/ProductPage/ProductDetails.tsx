@@ -143,7 +143,7 @@ function ProductDetails({ pageRef, productDetails, totalReviews }: Props) {
 
           <p>{totalReviews}</p>
         </div>
-        <h3 className="text-xl font-bold">₱ 299</h3>
+        <h3 className="text-xl font-bold">₱ {productDetails.productPrice}</h3>
         <p className="text-gray-500">{productDetails.productDescription}</p>
         <div className="mb-4 flex items-center justify-between">
           <label htmlFor="">Quantity</label>
