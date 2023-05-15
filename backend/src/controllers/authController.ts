@@ -65,7 +65,11 @@ export default {
 
       const { password, ...details } = createUser;
 
-      res.cookie("refreshToken", refreshToken, { httpOnly: true });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        path: process.env.FRONT_ORIGIN,
+        sameSite: "strict",
+      });
 
       res.status(201).json({
         ...details,
@@ -123,7 +127,11 @@ export default {
         isUserExist.userId,
         isUserExist.isAdmin
       );
-      res.cookie("refreshToken", refreshToken, { httpOnly: true });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        path: process.env.FRONT_ORIGIN,
+        sameSite: "strict",
+      });
 
       res.status(200).json({
         ...details,
@@ -172,7 +180,11 @@ export default {
       const newAccessToken = generateAccessToken(userId, getUser.isAdmin);
       const newRefreshToken = generateRefreshToken(userId, getUser.isAdmin);
 
-      res.cookie("refreshToken", newRefreshToken, { httpOnly: true });
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        path: process.env.FRONT_ORIGIN,
+        sameSite: "strict",
+      });
 
       res.status(200).json({
         ...details,

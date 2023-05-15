@@ -24,7 +24,7 @@ const PORT = 8080;
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.FRONT_ORIGIN,
     credentials: true,
   })
 );
