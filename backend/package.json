@@ -6,11 +6,11 @@
   "scripts": {
     "install:dev": "npm install",
     "install:prod": "npm ci --production",
-    "build": "rimraf dist && ts-node",
+    "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "prevdev": "npm run build",
-    "dev": "concurrently \"ts-node -w\" \"nodemon dist/index.js\""
+    "dev": "concurrently \"npx tsc -w\" \"nodemon dist/index.js\""
   },
   "keywords": [],
   "author": "",
