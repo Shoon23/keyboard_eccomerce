@@ -132,4 +132,7 @@ The keyboard eccomerce project is a keyboard e-commerce application developed us
 
   Users can remove products from their liked list if they change their preferences.
 
+## Responsive 
+
+  ![Image Alt Text](https://res.cloudinary.com/dkarsw8bs/image/upload/v1686834611/md/keyboard_eccomrce/Responsive.png)
 
