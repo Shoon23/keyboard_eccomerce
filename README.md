@@ -1,5 +1,8 @@
 # keyboard_eccomerce
 
+## Overview
+The keyboard eccomerce project is a keyboard e-commerce application developed using React. The goal of the project is to create a web application or website that allows users to browse, search, and purchase keyboards online.
+
 ## Getting Started
     git clone <repo link>
     cd keyboard_eccomrce
